@@ -1,19 +1,17 @@
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   name: spring-boot-hpa
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: extensions/v1beta1
     kind: Deployment
     name: backend
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+  - type: Pods
+    pods:
+      metricName: messages
+      targetAverageValue: 10
