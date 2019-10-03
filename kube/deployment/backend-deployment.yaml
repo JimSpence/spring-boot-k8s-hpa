@@ -31,16 +31,3 @@ spec:
         resources:
           limits:
             memory: 256Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-spec:
-  ports:
-  - nodePort: 31000
-    port: 8080
-    targetPort: 8080
-  selector:
-    app: backend
-  type: LoadBalancer

@@ -22,14 +22,3 @@ spec:
         resources:
           limits:
             memory: 512Mi
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: queue
-spec:
-  ports:
-  - port: 61616
-    targetPort: 61616
-  selector:
-    app: queue

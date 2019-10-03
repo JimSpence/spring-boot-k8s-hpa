@@ -124,14 +124,14 @@ stages{
             gcloud config set project ${GCLOUD_PROJECT_ID}
             gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
             
-            chmod +x "$BASE_DIR"/k8s/process_files.sh
+           // chmod +x "$BASE_DIR"/k8s/process_files.sh
 
             cd "$BASE_DIR"/k8s/
             pwd
 
             cd "$BASE_DIR"/k8s/${IMAGE_NAME}/.
-            kubectl apply -f "$BASE_DIR"/k8s/${IMAGE_NAME}/
-            kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/k8s/$IMAGE_NAME/frontend-deployment.yaml
+            kubectl apply -f "$BASE_DIR"/kube/deployment/
+            kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/kube/deployment/frontend-deployment.yaml
             
             gcloud auth revoke --all
             '''
