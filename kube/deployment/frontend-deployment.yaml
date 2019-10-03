@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jimbono05/spring-boot-k8s-hpa:1.0.0
-        imagePullPolicy: IfNotPresent
+        image: jimbono05/spring-boot-k8s-hpa
+        imagePullPolicy: Always
         env:
         - name: ACTIVEMQ_BROKER_URL
           value: "tcp://queue:61616"
