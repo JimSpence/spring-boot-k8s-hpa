@@ -53,6 +53,11 @@ environment {
 
 agent any
 
+//tools {
+//        maven 'Maven 3.3.9'
+//        jdk 'jdk8'
+//}
+
 stages{
     stage('Init'){
         steps{
@@ -109,6 +114,11 @@ stages{
             '''
             }
         }
+    }
+    stage ('Build') {
+                steps {
+                    sh 'mvn resources:resources'
+                }
     }
     stage('Deploy'){
         steps{
