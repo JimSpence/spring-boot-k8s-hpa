@@ -1,5 +1,6 @@
 server:
   address: 0.0.0.0
+  port: 8081
 activemq:
   brokerUrl: ${ACTIVEMQ_BROKER_URL:vm://localhost:61616}
 queue:
