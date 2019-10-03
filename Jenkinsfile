@@ -124,8 +124,6 @@ stages{
             gcloud config set project ${GCLOUD_PROJECT_ID}
             gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
             
-           // chmod +x "$BASE_DIR"/k8s/process_files.sh
-
             cd "$BASE_DIR"/k8s/
             pwd
 
