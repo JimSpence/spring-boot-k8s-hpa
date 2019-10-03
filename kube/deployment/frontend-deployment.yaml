@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jimbono05/springboot-k8s-hpa
+        image: jimbono05/spring-boot-k8s-hpa:1.0.0
         imagePullPolicy: IfNotPresent
         env:
         - name: ACTIVEMQ_BROKER_URL
