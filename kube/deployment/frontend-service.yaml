@@ -7,7 +7,7 @@ spec:
   ports:
   - nodePort: 32000
     port: 8080
-    targetPort: 8080
+    targetPort: 8081
   selector:
     app: frontend
   # type: NodePort

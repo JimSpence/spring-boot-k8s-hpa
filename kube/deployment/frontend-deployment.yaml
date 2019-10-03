@@ -25,7 +25,7 @@ spec:
         - name: WORKER_ENABLED
           value: "false"
         ports:
-          - containerPort: 8080
+          - containerPort: 8081
         resources:
           limits:
             memory: 512Mi
