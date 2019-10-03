@@ -9,7 +9,7 @@ RUN mvn package -Dmaven.test.skip=true
 FROM openjdk:10.0.1-10-jre-slim
 
 WORKDIR /app
-EXPOSE 8081
+EXPOSE 8080
 ENV STORE_ENABLED=true
 ENV WORKER_ENABLED=true
 COPY --from=build /app/target/spring-boot-k8s-hpa-0.0.1-SNAPSHOT.jar /app
