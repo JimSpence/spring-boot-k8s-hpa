@@ -123,7 +123,13 @@ stages{
             gcloud config set compute/region europe-west2
             gcloud config set project ${GCLOUD_PROJECT_ID}
             gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
-            
+
+            echo "Having to undeploy deployments as I cant SED deployment files from my Jenkins due to permisssions"
+
+            kubectl delete deployment frontend
+            kubectl delete deployment backend
+            kubectl delete deployment queue
+
             kubectl apply -f "$BASE_DIR"/kube/deployment/
             kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/kube/deployment/frontend-deployment.yaml
             
