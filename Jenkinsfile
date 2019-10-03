@@ -1,64 +1,157 @@
-// From: https://betsol.com/2018/11/devops-using-jenkins-docker-and-kubernetes/
+// The MIT License
+// SPDX short identifier: MIT
+// Further resources on the MIT License
+// Copyright 2018 Amit Thakur - amitthk - <e.amitthakur@gmail.com>
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-node{
+def getTimeStamp(){
+    return sh (script: "date +'%Y%m%d%H%M%S%N' | sed 's/[0-9][0-9][0-9][0-9][0-9][0-9]\$//g'", returnStdout: true);
+}
+def getEnvVar(String paramName){
+    return sh (script: "grep '${paramName}' env_vars/project.properties|cut -d'=' -f2", returnStdout: true).trim();
+}
+def getTargetEnv(String branchName){
+    def deploy_env = 'none';
+    switch(branchName) {
+        case 'master':
+            deploy_env='uat'
+        break
+        case 'develop':
+            deploy_env = 'dev'
+        default:
+            if(branchName.startsWith('release')){
+                deploy_env='sit'
+            }
+            if(branchName.startsWith('feature')){
+                deploy_env='none'
+            }
+    }
+    return deploy_env
+}
 
-  //Define all variables
-  def project = 'jimbono05'
-  def appName = 'spring-boot-k8s-hpa'
-  //def serviceName = "${appName}-backend"
-  def imageVersion = 'development'
-  def namespace = 'development'
-  def imageTag = "docker.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
+def getImageTag(String currentBranch)
+{
+    def image_tag = 'latest'
+    if(currentBranch==null){
+        image_tag = getEnvVar('IMAGE_TAG')
+    }
+    if(currentBranch=='master'){
+        image_tag= getEnvVar('IMAGE_TAG')
+    }
+    if(currentBranch.startsWith('release')){
+        image_tag = currentBranch.substring(8);
+    }
+    return image_tag
+}
+pipeline{
 
-  //Checkout Code from Git
-  checkout scm
+environment {
+    GIT_COMMIT_SHORT_HASH = sh (script: "git rev-parse --short HEAD", returnStdout: true)
+}
 
-  //Stage 1 : Build the docker image.
-  stage('Build image') {
-      sh("docker build -t ${imageTag} .")
-  }
+agent any
 
-  //Stage 2 : Push the image to docker registry
-  stage('Push image to registry') {
-      sh("gcloud docker -- push ${imageTag}")
-  }
+stages{
+    stage('Init'){
+        steps{
+            //checkout scm;
+        script{
+        env.BASE_DIR = pwd()
+        env.CURRENT_BRANCH = env.BRANCH_NAME
+        env.IMAGE_TAG = getImageTag(env.CURRENT_BRANCH)
+        env.TIMESTAMP = getTimeStamp()
+        env.APP_NAME= getEnvVar('APP_NAME')
+        env.IMAGE_NAME = getEnvVar('IMAGE_NAME')
+        env.PROJECT_NAME=getEnvVar('PROJECT_NAME')
+        env.DOCKER_REGISTRY_URL=getEnvVar('DOCKER_REGISTRY_URL')
+        env.RELEASE_TAG = getEnvVar('RELEASE_TAG')
+        env.DOCKER_PROJECT_NAMESPACE = getEnvVar('DOCKER_PROJECT_NAMESPACE')
+        env.DOCKER_IMAGE_TAG= "${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT_NAMESPACE}/${APP_NAME}:${RELEASE_TAG}"
+        env.JENKINS_DOCKER_CREDENTIALS_ID = getEnvVar('JENKINS_DOCKER_CREDENTIALS_ID')        
+        env.JENKINS_GCLOUD_CRED_ID = getEnvVar('JENKINS_GCLOUD_CRED_ID')
+        env.GCLOUD_PROJECT_ID = getEnvVar('GCLOUD_PROJECT_ID')
+        env.GCLOUD_K8S_CLUSTER_NAME = getEnvVar('GCLOUD_K8S_CLUSTER_NAME')
+        env.JENKINS_GCLOUD_CRED_LOCATION = getEnvVar('JENKINS_GCLOUD_CRED_LOCATION')
 
-  //Stage 3 : Deploy Application
-  stage('Deploy Application') {
-       switch (namespace) {
-              //Roll out to Dev Environment
-              case "development":
-                   // Create namespace if it doesn't exist
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-           //Update the imagetag to the latest version
-                   sh("sed -i.bak 's#gcr.io/${project}/${appName}:${imageVersion}#${imageTag}#' ./k8s/development/*.yaml")
-                   //Create or update resources
-           sh("kubectl --namespace=${namespace} apply -f k8s/development/deployment.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/development/service.yaml")
-           //Grab the external Ip address of the service
-                   sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
+        }
 
-        //Roll out to Dev Environment
-              case "production":
-                   // Create namespace if it doesn't exist
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-           //Update the imagetag to the latest version
-                   sh("sed -i.bak 's#gcr.io/${project}/${appName}:${imageVersion}#${imageTag}#' ./k8s/production/*.yaml")
-           //Create or update resources
-                   sh("kubectl --namespace=${namespace} apply -f k8s/production/deployment.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/production/service.yaml")
-           //Grab the external Ip address of the service
-                   sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
+        }
+    }
 
-              default:
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-                   sh("sed -i.bak 's#gcr.io/${project}/${appName}:${imageVersion}#${imageTag}#' ./k8s/development/*.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/development/deployment.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/development/service.yaml")
-                   sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
-  }
+    stage('Cleanup'){
+        steps{
+            sh '''
+            docker rmi $(docker images -f 'dangling=true' -q) || true
+            docker rmi $(docker images | sed 1,2d | awk '{print $3}') || true
+            '''
+        }
 
+    }
+    stage('Build'){
+        steps{
+            withEnv(["APP_NAME=${APP_NAME}", "PROJECT_NAME=${PROJECT_NAME}"]){
+                sh '''
+                docker build -t ${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT_NAMESPACE}/${IMAGE_NAME}:${RELEASE_TAG} --build-arg APP_NAME=${IMAGE_NAME}  -f app/Dockerfile app/.
+                '''
+            }   
+        }
+    }
+    stage('Publish'){
+        steps{
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${JENKINS_DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWD']])
+            {
+            sh '''
+            echo $DOCKER_PASSWD | docker login --username ${DOCKER_USERNAME} --password-stdin ${DOCKER_REGISTRY_URL} 
+            docker push ${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT_NAMESPACE}/${IMAGE_NAME}:${RELEASE_TAG}
+            docker logout
+            '''
+            }
+        }
+    }
+    stage('Deploy'){
+        steps{
+        withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
+        {
+        sh '''
+            echo "====="
+            echo ${JENKINSGCLOUDCREDENTIAL}
+            echo "====="
+            gcloud auth activate-service-account --key-file=/c/Users/jimsp/Downloads/pristine-surf-254112-e7fdcc81d8f3.json
+            gcloud config set compute/zone europe-west2-a
+            gcloud config set compute/region europe-west2
+            gcloud config set project ${GCLOUD_PROJECT_ID}
+            gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
+            
+            chmod +x "$BASE_DIR"/k8s/process_files.sh
+
+            cd "$BASE_DIR"/k8s/
+            pwd
+
+            cd "$BASE_DIR"/k8s/${IMAGE_NAME}/.
+            kubectl apply -f "$BASE_DIR"/k8s/${IMAGE_NAME}/
+            kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/k8s/$IMAGE_NAME/frontend-deployment.yaml
+            
+            gcloud auth revoke --all
+            '''
+        }
+        }
+    }
+}
+
+post {
+    always {
+        echo "Build# ${env.BUILD_NUMBER} - Job: ${env.JOB_NUMBER} status is: ${currentBuild.currentResult}"
+        // emailext(attachLog: true,
+        // mimeType: 'text/html',
+        // body: '''
+        // <h2>Build# ${env.BUILD_NUMBER} - Job: ${env.JOB_NUMBER} status is: ${currentBuild.currentResult}</h2>
+        // <p>Check console output at &QUOT;<a href='${env.BUILD_URL'>${env.JOB_NAME} - [${env.BUILD_NUMBER}]</a>&QUOT;</p>
+        // ''',
+        // recipientProviders: [[$class: "FirstFailingBuildSusspectRecipientProvider"]],
+        // subject: "Build# ${env.BUILD_NUMBER} - Job: ${env.JOB_NUMBER} status is: ${currentBuild.currentResult}",
+        // to: "e.amitthakur@gmail.com")
+    }
+}
 }
