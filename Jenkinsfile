@@ -56,6 +56,7 @@ agent any
 //tools {
 //        maven 'Maven 3.3.9'
 //        jdk 'jdk8'
+//
 //}
 
 stages{
@@ -115,7 +116,7 @@ stages{
             }
         }
     }
-    stage ('Build') {
+    stage ('Resources') {
                 steps {
                     sh 'mvn resources:resources'
                 }
