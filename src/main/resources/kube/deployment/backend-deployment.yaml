@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: jimbono05/spring-boot-k8s-hpa/@project.version@
+        image: jimbono05/spring-boot-k8s-hpa
         imagePullPolicy: Always
         env:
         - name: ACTIVEMQ_BROKER_URL

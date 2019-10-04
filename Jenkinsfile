@@ -115,7 +115,7 @@ stages{
 //            '''
 //            }
 //        }
-//    }
+//      }
     stage ('Resources') {
                 steps {
                     sh 'mvn resources:resources'
@@ -141,8 +141,8 @@ stages{
             kubectl delete deployment backend
             kubectl delete deployment queue
 
-            kubectl apply -f "$BASE_DIR"/kube/deployment/
-            kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/kube/deployment/frontend-deployment.yaml
+            kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
+            kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
             
             gcloud auth revoke --all
             '''
