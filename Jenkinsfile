@@ -139,7 +139,7 @@ stages{
             echo "Having to undeploy deployments as I cant SED deployment files from my Jenkins due to permisssions"
             echo "kubectl delete deployment frontend"
             echo "kubectl delete deployment backend"
-            echo "kubectl delete deployment queue2"
+            echo "kubectl delete deployment queue"
 
             kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
             kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
