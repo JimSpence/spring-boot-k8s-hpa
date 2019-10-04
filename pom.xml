@@ -84,7 +84,8 @@
                 <filtering>true</filtering>
                 <includes>
                     <include>**/test.txt</include>
-                    <include>**/kube/deployment/backend-deployment.yaml</include>
+                    <include>**/kube/deployment/*.yaml</include>
+                    <include>**/env_vars/*.*</include>
                 </includes>
             </resource>
             <resource>
@@ -92,7 +93,8 @@
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>**/test.txt</exclude>
-                    <exclude>**/kube/deployment/backend-deployment.yaml</exclude>
+                    <exclude>**/kube/deployment/*.yaml</exclude>
+                    <exclude>**/env_vars/*.*</exclude>
                 </excludes>
             </resource>
         </resources>

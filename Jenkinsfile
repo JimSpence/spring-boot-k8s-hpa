@@ -10,7 +10,7 @@ def getTimeStamp(){
     return sh (script: "date +'%Y%m%d%H%M%S%N' | sed 's/[0-9][0-9][0-9][0-9][0-9][0-9]\$//g'", returnStdout: true);
 }
 def getEnvVar(String paramName){
-    return sh (script: "grep '${paramName}' env_vars/project.properties|cut -d'=' -f2", returnStdout: true).trim();
+    return sh (script: "grep '${paramName}' target/classes/env_vars/project.properties|cut -d'=' -f2", returnStdout: true).trim();
 }
 def getTargetEnv(String branchName){
     def deploy_env = 'none';
