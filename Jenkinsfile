@@ -60,6 +60,11 @@ agent any
 //}
 
 stages{
+    stage ('Resources') {
+                steps {
+                    sh 'mvn resources:resources'
+                }
+    }
     stage('Init'){
         steps{
             //checkout scm;
@@ -116,11 +121,6 @@ stages{
 //            }
 //        }
 //      }
-    stage ('Resources') {
-                steps {
-                    sh 'mvn resources:resources'
-                }
-    }
     stage('Deploy'){
         steps{
         withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
