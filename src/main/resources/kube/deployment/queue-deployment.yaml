@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: queue
+        updateTimestamp: "@maven.build.timestamp@"
     spec:
       containers:
       - name: web

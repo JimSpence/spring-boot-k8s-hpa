@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: frontend
+        updateTimestamp: "@maven.build.timestamp@"
     spec:
       containers:
       - name: frontend

@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: backend
+        updateTimestamp: "@maven.build.timestamp@"
       annotations:
         prometheus.io/scrape: 'true'
     spec:
