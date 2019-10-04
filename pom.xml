@@ -83,18 +83,18 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/test.txt</include>
                     <include>**/kube/deployment/*.yaml</include>
                     <include>**/env_vars/*.*</include>
+                    <include>**/docker/Dockerfile</include>
                 </includes>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>**/test.txt</exclude>
                     <exclude>**/kube/deployment/*.yaml</exclude>
                     <exclude>**/env_vars/*.*</exclude>
+                    <exclude>**/docker/Dockerfile</exclude>
                 </excludes>
             </resource>
         </resources>
