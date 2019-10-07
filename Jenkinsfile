@@ -150,9 +150,8 @@ stages{
         }
     }
 
-    input 'Continue to Deploy to UAT?'
-
     stage('DeployToUAT'){
+        input 'Continue to Deploy to UAT?'
         steps{
             sh '''
                 echo "================"
