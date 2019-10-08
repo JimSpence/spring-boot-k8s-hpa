@@ -2,20 +2,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: @branch.name@-frontend
 spec:
   selector:
     matchLabels:
-      app: frontend
+      app: @branch.name@-frontend
   replicas: 1
   template:
     metadata:
       labels:
-        app: frontend
+        app: @branch.name@-frontend
         updateTimestamp: "@timestamp@"
     spec:
       containers:
-      - name: frontend
+      - name: @branch.name@-frontend
         image: jimbono05/spring-boot-k8s-hpa:@project.version@
         imagePullPolicy: Always
         env:

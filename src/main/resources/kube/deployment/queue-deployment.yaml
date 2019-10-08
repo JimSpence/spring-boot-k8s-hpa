@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: queue
+  name: @branch.name@-queue
 spec:
   selector:
     matchLabels:
-      app: queue
+      app: @branch.name@-queue
   replicas: 1
   template:
     metadata:
       labels:
-        app: queue
+        app: @branch.name@-queue
         updateTimestamp: "@timestamp@"
     spec:
       containers:

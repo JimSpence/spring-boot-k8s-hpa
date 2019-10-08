@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: @branch.name@-backend
 spec:
   selector:
     matchLabels:
-      app: backend
+      app: @branch.name@-backend
   replicas: 1
   template:
     metadata:
       labels:
-        app: backend
+        app: @branch.name@-backend
         updateTimestamp: "@timestamp@"
       annotations:
         prometheus.io/scrape: 'true'
