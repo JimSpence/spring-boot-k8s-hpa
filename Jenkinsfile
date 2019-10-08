@@ -79,7 +79,7 @@ stages{
         script{
         env.BASE_DIR = pwd()
         env.CURRENT_BRANCH = env.BRANCH_NAME.toLowerCase()
-        sh 'echo "Branch_Name = ${BRANCH_NAME.toLowerCase()}"'
+        sh """echo 'Branch_Name = ${BRANCH_NAME.toLowerCase()}'"""
         env.IMAGE_TAG = getImageTag(env.CURRENT_BRANCH)
         sh 'echo "Image_Tag = ${IMAGE_TAG}"'
         env.TARGET_ENV = getTargetEnv(env.CURRENT_BRANCH)
