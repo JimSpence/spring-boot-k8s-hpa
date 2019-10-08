@@ -22,7 +22,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: ACTIVEMQ_BROKER_URL
-          value: "tcp://queue:@port.queue@"
+          value: "tcp://@branch.name@-queue:@port.queue@"
         - name: STORE_ENABLED
           value: "false"
         - name: WORKER_ENABLED
