@@ -2,7 +2,7 @@ server:
   address: 0.0.0.0
   port: 8080
 activemq:
-  brokerUrl: ${ACTIVEMQ_BROKER_URL:vm://localhost:61616}
+  brokerUrl: ${ACTIVEMQ_BROKER_URL:vm://localhost:@port.queue@}
 queue:
   name: ${QUEUE_NAME:mainQueue}
 worker:
