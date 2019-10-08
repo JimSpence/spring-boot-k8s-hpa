@@ -66,7 +66,7 @@ stages{
                     if(env.BRANCH_NAME=='master'){
                         sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME} -Dport.frontend=32000 -Dport.backend=31000 -Dport.queue=61616'
                     } else {
-                        sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME} -Dport.frontend=32001 -Dport.backend=31001 -Dport.queue=61617'
+                        sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME} -Dport.frontend=32001 -Dport.backend=31001 -Dport.queue=61616'
                     }
                 }
           }
