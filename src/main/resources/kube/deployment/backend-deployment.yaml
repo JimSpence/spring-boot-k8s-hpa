@@ -17,7 +17,7 @@ spec:
         prometheus.io/scrape: 'true'
     spec:
       containers:
-      - name: backend
+      - name: @branch.name@-backend
         image: jimbono05/spring-boot-k8s-hpa:@project.version@
         imagePullPolicy: Always
         env:

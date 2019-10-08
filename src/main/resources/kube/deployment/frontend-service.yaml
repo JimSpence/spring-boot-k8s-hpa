@@ -9,6 +9,6 @@ spec:
     port: 8080
     targetPort: 8080
   selector:
-    app: frontend
+    app: @branch.name@-frontend
   # type: NodePort
   type: LoadBalancer
