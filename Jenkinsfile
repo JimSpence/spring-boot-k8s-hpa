@@ -71,11 +71,17 @@ stages{
         script{
         env.BASE_DIR = pwd()
         env.CURRENT_BRANCH = env.BRANCH_NAME
-        sh 'echo "Branch_Name = ${BRANCH_NAME}"'
+        sh '''
+            echo "Branch_Name = ${BRANCH_NAME}"'
+        '''
         env.IMAGE_TAG = getImageTag(env.CURRENT_BRANCH)
-        sh 'echo "Image_Tag = ${IMAGE_TAG}"'
+        sh '''
+            echo "Image_Tag = ${IMAGE_TAG}"
+        '''
         env.TARGET_ENV = getTargetEnv(env.CURRENT_BRANCH)
-        sh 'echo "Target_Env = ${TARGET_ENV}"'
+        sh '''
+            echo "Target_Env = ${TARGET_ENV}"
+        '''
         env.TIMESTAMP = getTimeStamp()
         env.APP_NAME= getEnvVar('APP_NAME')
         env.IMAGE_NAME = getEnvVar('IMAGE_NAME')
@@ -156,7 +162,7 @@ stages{
 
     stage('DeployToUAT'){
         steps{
-            input "Continue to Deploy to UAT?"
+//            input "Continue to Deploy to UAT?"
             sh '''
                 echo "================"
                 echo "DEPLOYING TO UAT"
