@@ -88,6 +88,7 @@
                     <include>**/kube/deployment/*.yaml</include>
                     <include>**/env_vars/*.*</include>
                     <include>**/docker/Dockerfile</include>
+                    <include>**/application.yaml</include>
                 </includes>
             </resource>
             <resource>
@@ -97,6 +98,7 @@
                     <exclude>**/kube/deployment/*.yaml</exclude>
                     <exclude>**/env_vars/*.*</exclude>
                     <exclude>**/docker/Dockerfile</exclude>
+                    <exclude>**/application.yaml</exclude>
                 </excludes>
             </resource>
         </resources>
