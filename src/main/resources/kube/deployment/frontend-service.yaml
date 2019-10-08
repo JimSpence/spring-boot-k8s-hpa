@@ -5,7 +5,7 @@ metadata:
   name: @branch.name@-frontend
 spec:
   ports:
-  - nodePort: 32000
+  - nodePort: @port.frontend@
     port: 8080
     targetPort: 8080
   selector:

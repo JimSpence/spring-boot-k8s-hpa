@@ -5,7 +5,7 @@ metadata:
   name: @branch.name@-backend
 spec:
   ports:
-  - nodePort: 31000
+  - nodePort: @port.backend@
     port: 8080
     targetPort: 8080
   selector:

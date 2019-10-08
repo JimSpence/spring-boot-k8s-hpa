@@ -19,7 +19,7 @@ spec:
         image: webcenter/activemq:5.14.3
         imagePullPolicy: IfNotPresent
         ports:
-          - containerPort: 61616
+          - containerPort: @port.queue@
         resources:
           limits:
             memory: 512Mi

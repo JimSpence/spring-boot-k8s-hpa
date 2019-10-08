@@ -5,7 +5,7 @@ metadata:
   name: @branch.name@-queue
 spec:
   ports:
-  - port: 61616
-    targetPort: 61616
+  - port: @port.queue@
+    targetPort: @port.queue@
   selector:
     app: @branch.name@-queue
