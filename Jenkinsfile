@@ -64,11 +64,11 @@ stages{
           steps {
                 script{
                     if(env.BRANCH_NAME=='master'){
-                        sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32000 -Dport.backend=31000 -Dport.queue=61616'
+                        sh """mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32000 -Dport.backend=31000 -Dport.queue=61616"""
                     } else if(env.BRANCH_NAME.startsWith('feature')) {
-                        sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32001 -Dport.backend=31001 -Dport.queue=61616'
+                        sh """mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32001 -Dport.backend=31001 -Dport.queue=61616"""
                     } else {
-                        sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32002 -Dport.backend=31002 -Dport.queue=61616'
+                        sh """mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32002 -Dport.backend=31002 -Dport.queue=61616"""
                     }
                 }
           }
