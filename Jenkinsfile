@@ -62,7 +62,7 @@ agent any
 stages{
     stage ('Resources') {
                 steps {
-                    sh 'mvn resources:resources'
+                    sh 'mvn resources:resources -Dbranch.name=${BRANCH_NAME}'
                 }
     }
     stage('Init'){
