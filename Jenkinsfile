@@ -182,12 +182,12 @@ stages{
             script{
                 if(env.BRANCH_NAME!='master'){
                     sh """
-                        kubectl delete svc frontend-${BRANCH_NAME.toLowerCase()}
-                        kubectl delete svc backend-${BRANCH_NAME.toLowerCase()}
-                        kubectl delete svc queue-${BRANCH_NAME.toLowerCase()}
-                        kubectl delete deployment frontend-${BRANCH_NAME.toLowerCase()}
-                        kubectl delete deployment backend-${BRANCH_NAME.toLowerCase()}
-                        kubectl delete deployment queue-${BRANCH_NAME.toLowerCase()}
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-frontend
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-backend
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-queue
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-frontend
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-backend
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-queue
                     """
                 }
             }
