@@ -162,6 +162,38 @@ stages{
         }
     }
 
+    stage('RunIntegrationTestsAgainstCluster'){
+        steps{
+            script{
+                if(env.BRANCH_NAME!='master'){
+                    sh """
+                        echo '================================='
+                        echo 'INTEGRATION TESTS AGAINST CLUSTER'
+                        echo '================================='
+                        echo '==Running Maven Resource Instead='
+                        mvn resources:resources -Dbranch.name=${BRANCH_NAME.toLowerCase()} -Dport.frontend=32000 -Dport.backend=31000 -Dport.queue=61616
+                    """
+                }
+            }
+        }
+    }
+    stage('Undeploy'){
+        steps{
+            script{
+                if(env.BRANCH_NAME!='master'){
+                    input "Add pause for effect. Undeploy?"
+                    sh """
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-frontend
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-backend
+                        kubectl delete svc ${BRANCH_NAME.toLowerCase()}-queue
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-frontend
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-backend
+                        kubectl delete deployment ${BRANCH_NAME.toLowerCase()}-queue
+                    """
+                }
+            }
+        }
+    }
     stage('DeployToUAT'){
         steps{
 //            input "Continue to Deploy to UAT?"
