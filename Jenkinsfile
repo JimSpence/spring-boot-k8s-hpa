@@ -181,6 +181,7 @@ stages{
         steps{
             script{
                 if(env.BRANCH_NAME!='master'){
+                    input "Add pause for effect. Undeploy?"
                     sh """
                         kubectl delete svc ${BRANCH_NAME.toLowerCase()}-frontend
                         kubectl delete svc ${BRANCH_NAME.toLowerCase()}-backend
