@@ -108,36 +108,11 @@ stages{
          withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
             sh '''
                 aws eks --region eu-west-2 update-kubeconfig --name jims_eks_demo
-                    '''
-            }
-        }
-    }
-
-    stage('Deploy'){
-        steps{
-        // withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
- //           {
-            sh '''
-                echo "====="
-                echo ${JENKINSGCLOUDCREDENTIAL}
-                echo "====="
-                gcloud auth activate-service-account --key-file=/c/Users/jimsp/Downloads/pristine-surf-254112-e7fdcc81d8f3.json
-                gcloud config set compute/zone europe-west2-a
-                gcloud config set compute/region europe-west2
-                gcloud config set project ${GCLOUD_PROJECT_ID}
-                gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
-
-                echo "Having to undeploy deployments as I cant SED deployment files from my Jenkins due to permisssions"
-                echo "kubectl delete deployment frontend"
-                echo "kubectl delete deployment backend"
-                echo "kubectl delete deployment queue"
 
                 kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
                 kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
-
-                gcloud auth revoke --all
-                '''
-   //         }
+                    '''
+            }
         }
     }
 
