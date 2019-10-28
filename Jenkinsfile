@@ -106,7 +106,7 @@ stages{
     stage('Deploy'){
         steps{
         // withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
-            {
+ //           {
             sh '''
                 echo "====="
                 echo ${JENKINSGCLOUDCREDENTIAL}
@@ -127,7 +127,7 @@ stages{
 
                 gcloud auth revoke --all
                 '''
-            }
+   //         }
         }
     }
 
