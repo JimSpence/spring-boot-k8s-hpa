@@ -105,7 +105,7 @@ stages{
 
     stage('Deploy'){
         steps{
-        withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
+        // withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
             {
             sh '''
                 echo "====="
