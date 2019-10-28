@@ -107,9 +107,8 @@ stages{
         steps{
          withAWS(credentials: 'Jenkins', region: 'eu-east-1')    {
             sh '''
-                kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
-                kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
-                '''
+                aws iam get-user
+                    '''
             }
         }
     }
