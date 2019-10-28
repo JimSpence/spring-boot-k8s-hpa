@@ -107,7 +107,7 @@ stages{
         steps{
          withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
             sh '''
-                aws eks update-kubeconfig --name eksdemo
+                aws eks --region eu-west-2 update-kubeconfig --name jims_eks_demo
                     '''
             }
         }
