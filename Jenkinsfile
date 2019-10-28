@@ -103,6 +103,17 @@ stages{
         }
     }
 
+    stage('DeployAWS'){
+        steps{
+         withAWS(credentials: 'Jenkins', region: 'eu-east-1')    {
+            sh '''
+                kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
+                kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
+                '''
+            }
+        }
+    }
+
     stage('Deploy'){
         steps{
         // withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
