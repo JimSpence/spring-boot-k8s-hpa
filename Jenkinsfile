@@ -105,9 +105,9 @@ stages{
 
     stage('DeployAWS'){
         steps{
-         withAWS(credentials: 'Jenkins', region: 'eu-east-1')    {
+         withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
             sh '''
-                aws iam get-user
+                aws eks update-kubeconfig --name eksdemo
                     '''
             }
         }
