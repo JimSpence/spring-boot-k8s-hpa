@@ -108,11 +108,12 @@ stages{
          withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
             sh '''
                 aws eks --region eu-west-2 update-kubeconfig --name jims_eks_demo
-
+                    '''
+            }
+            sh '''
                 kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
                 kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
                     '''
-            }
         }
     }
 
