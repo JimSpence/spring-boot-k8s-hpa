@@ -103,38 +103,6 @@ stages{
         }
     }
 
-    stage('Cleanup'){
-        steps{
-            sh '''
-            docker rmi $(docker images -f 'dangling=true' -q) || true
-            docker rmi $(docker images | sed 1,2d | awk '{print $3}') || true
-            '''
-        }
-
-    }
-    stage('Build'){
-        steps{
-            withEnv(["APP_NAME=${APP_NAME}", "PROJECT_NAME=${PROJECT_NAME}"]){
-                sh '''
-                cp ./target/classes/docker/Dockerfile .
-                docker build -t ${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT_NAMESPACE}/${IMAGE_NAME}:${RELEASE_TAG} --build-arg APP_NAME=${IMAGE_NAME}  -f Dockerfile .
-                '''
-            }
-        }
-    }
-    stage('Publish'){
-        steps{
-            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${JENKINS_DOCKER_CREDENTIALS_ID}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWD']])
-            {
-            sh '''
-            echo $DOCKER_PASSWD | docker login --username ${DOCKER_USERNAME} --password-stdin ${DOCKER_REGISTRY_URL}
-            docker push ${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT_NAMESPACE}/${IMAGE_NAME}:${RELEASE_TAG}
-            docker logout
-            '''
-            }
-        }
-     }
-
     stage('DeployAWS'){
         steps{
          withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
@@ -158,28 +126,21 @@ stages{
 //        withCredentials([file(credentialsId: "${JENKINS_GCLOUD_CRED_ID}", variable: 'JENKINSGCLOUDCREDENTIAL')])
 //            {
             sh '''
-                echo "====="
-                echo ${JENKINSGCLOUDCREDENTIAL}
-                echo "====="
                 gcloud auth activate-service-account --key-file=/c/Users/jimsp/Downloads/pristine-surf-254112-e7fdcc81d8f3.json
                 gcloud config set compute/zone europe-west2-a
                 gcloud config set compute/region europe-west2
                 gcloud config set project ${GCLOUD_PROJECT_ID}
                 gcloud container clusters get-credentials ${GCLOUD_K8S_CLUSTER_NAME}
 
-                echo "Having to undeploy deployments as I cant SED deployment files from my Jenkins due to permisssions"
-                echo "kubectl delete deployment frontend"
-                echo "kubectl delete deployment backend"
-                echo "kubectl delete deployment queue"
-
                 kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
                 kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
 
                 gcloud auth revoke --all
                 '''
-//            }
+//          }
         }
     }
+
 
     stage('RunIntegrationTestsAgainstCluster'){
         steps{
