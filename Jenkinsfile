@@ -135,23 +135,23 @@ stages{
         }
      }
 
-    stage('DeployAWS'){
-        steps{
-         withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
-            // Need to create cluster in AWS console with name jims_eks_demo
-            // Need to create worker nodes using template link from https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
-            // Need to link worker nodes to cluster by updating aws-auth-cm.yaml with NodeInstanceRole arn from CloudFoundation stack just created
-            // then run C:\mygitrepo\spring-boot-k8s-hpa\kube>kubectl apply -f aws-auth-cm.yaml
-            sh '''
-                aws eks --region eu-west-2 update-kubeconfig --name jims_eks_demo
-                    '''
-            }
-            sh '''
-                kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
-                kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
-                    '''
-        }
-    }
+//    stage('DeployAWS'){
+//        steps{
+//         withAWS(credentials: 'Jenkins', region: 'eu-west-2')    {
+//            // Need to create cluster in AWS console with name jims_eks_demo
+//            // Need to create worker nodes using template link from https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html
+//            // Need to link worker nodes to cluster by updating aws-auth-cm.yaml with NodeInstanceRole arn from CloudFoundation stack just created
+//            // then run C:\mygitrepo\spring-boot-k8s-hpa\kube>kubectl apply -f aws-auth-cm.yaml
+//            sh '''
+//                aws eks --region eu-west-2 update-kubeconfig --name jims_eks_demo
+//                    '''
+//            }
+//            sh '''
+//                kubectl apply -f "$BASE_DIR"/target/classes/kube/deployment/
+//                kubectl rollout status --v=5 --watch=true -f "$BASE_DIR"/target/classes/kube/deployment/frontend-deployment.yaml
+//                    '''
+//        }
+//    }
 
     stage('DeployGCP'){
         steps{
