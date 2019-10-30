@@ -1,7 +1,9 @@
 package com.learnk8s.app.controller;
 
+import com.learnk8s.app.model.Event;
 import com.learnk8s.app.model.Ticket;
 import com.learnk8s.app.queue.QueueService;
+import com.learnk8s.app.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -17,6 +20,9 @@ public class HelloController {
 
     @Autowired
     private QueueService queueService;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @Value("${queue.name}")
     private String queueName;
@@ -33,8 +39,12 @@ public class HelloController {
     @GetMapping("/")
     public String home(Model model) {
         int pendingMessages = queueService.pendingJobs(queueName);
+        long unconsumedRecords = eventRepository.count(false);
+        long consumedRecords = eventRepository.count(true);
         model.addAttribute("ticket", new Ticket());
         model.addAttribute("pendingJobs", pendingMessages);
+        model.addAttribute("unconsumedRecords", unconsumedRecords);
+        model.addAttribute("consumedRecords", consumedRecords);
         model.addAttribute("completedJobs", queueService.completedJobs());
         model.addAttribute("isConnected", queueService.isUp() ? "yes" : "no");
         model.addAttribute("queueName", this.queueName);
@@ -49,6 +59,10 @@ public class HelloController {
         for (long i = 0; i < ticket.getQuantity(); i++) {
             String id = UUID.randomUUID().toString();
             queueService.send(queueName, id);
+            Event event = new Event();
+            event.setConsumed(false);
+            event.setCreateTime(new Date().getTime());
+            eventRepository.write(event);
         }
         return "success";
     }

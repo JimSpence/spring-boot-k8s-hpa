@@ -44,6 +44,19 @@
                 <p class="f7 ttu mt0">&nbsp;</p>
             </div>
         </div>
+        <hr/>
+        <div class="flex items-start">
+            <div class="bg-near-white w5 tc pv3 mr4">
+                <div class="f-headline b" th:text="${unconsumedRecords}"></div>
+                <p class="f7 ttu b mb1">Unconsumed Records</p>
+                <p class="f7 ttu mt0">(from mongoDb)</p>
+            </div>
+            <div class="bg-near-white w5 tc pv3">
+                <div class="f-headline b" th:text="${consumedRecords}"></div>
+                <p class="f7 ttu b mb1">Consumed Records</p>
+                <p class="f7 ttu mt0">(from mongoDb)</p>
+            </div>
+        </div>
     </div>
 </div>
 </html>
