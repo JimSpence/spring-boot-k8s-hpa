@@ -67,6 +67,20 @@ public class HelloController {
         return "success";
     }
 
+    @CrossOrigin
+    @PostMapping("/submitFromReact")
+    public ResponseEntity submitFromReact(@RequestParam Integer quantity) {
+        for (long i = 0; i < quantity; i++) {
+            String id = UUID.randomUUID().toString();
+            queueService.send(queueName, id);
+            Event event = new Event();
+            event.setConsumed(false);
+            event.setCreateTime(new Date().getTime());
+            eventRepository.write(event);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @ResponseBody
     @RequestMapping(value="/metrics", produces="text/plain")
     public String metrics() {
